@@ -7,7 +7,8 @@ from PIL import Image
 from io import BytesIO
 
 # Constants
-PIXEL_TO_MICROMETER = 100 / 478  # 0.2092 µm/px
+PIXEL_TO_MICROMETER_40X = 0.2092
+PIXEL_TO_MICROMETER_20X = 0.6173
 MAX_SIZE = 1024
 
 # Load model once
@@ -20,11 +21,13 @@ magnification = st.selectbox("Select Microscope Magnification:", ["40x", "20x"])
 
 # Set config based on magnification
 if magnification == "40x":
-    cellpose_diameter = 150
+    diameter = 150
+    pixel_to_micrometer = PIXEL_TO_MICROMETER_40X
     min_um_area = 50
     apply_area_filter = True
 else:
-    cellpose_diameter = 50
+    diameter = 50
+    pixel_to_micrometer = PIXEL_TO_MICROMETER_20X
     min_um_area = 0
     apply_area_filter = False
 
@@ -43,7 +46,7 @@ if uploaded_files:
             scale = MAX_SIZE / max(gray.shape[:2])
             gray = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
 
-        masks, _, _, _ = model.eval(gray, diameter=cellpose_diameter, channels=[0, 0], batch_size=1)
+        masks, _, _, _ = model.eval(gray, diameter=diameter, channels=[0, 0], batch_size=1)
         overlay_img = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
         height, width = masks.shape
         areas = []
@@ -54,7 +57,7 @@ if uploaded_files:
 
             mask = (masks == cell_id).astype(np.uint8)
             area_px = np.sum(mask)
-            area_um = area_px * (PIXEL_TO_MICROMETER ** 2)
+            area_um = area_px * (pixel_to_micrometer ** 2)
 
             if apply_area_filter and area_um < min_um_area:
                 continue
