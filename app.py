@@ -26,7 +26,7 @@ if magnification == "40x":
     min_um_area = 50
     apply_area_filter = True
 else:
-    diameter = 50
+    diameter = 45
     pixel_to_micrometer = PIXEL_TO_MICROMETER_20X
     min_um_area = 0
     apply_area_filter = False
