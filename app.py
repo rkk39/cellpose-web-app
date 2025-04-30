@@ -8,7 +8,7 @@ from io import BytesIO
 
 # Constants
 PIXEL_TO_MICROMETER_40X = 0.2092
-PIXEL_TO_MICROMETER_20X = 0.410
+PIXEL_TO_MICROMETER_20X = 0.380
 MAX_SIZE = 1024
 
 # Load model once
