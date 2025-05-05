@@ -31,7 +31,11 @@ else:
     min_um_area = 0
     apply_area_filter = False
 
-uploaded_files = st.file_uploader("Upload microscopy image(s)", type=["png", "jpg", "jpeg", "tif", "tiff"], accept_multiple_files=True)
+uploaded_files = st.file_uploader(
+    "Upload microscopy image(s)",
+    type=["png", "jpg", "jpeg", "tif", "tiff"],
+    accept_multiple_files=True
+)
 
 master_data = []
 
@@ -46,7 +50,9 @@ if uploaded_files:
             scale = MAX_SIZE / max(gray.shape[:2])
             gray = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
 
-        masks, _, _, _ = model.eval(gray, diameter=diameter, channels=[0, 0], batch_size=1)
+        # ✅ FIXED FOR CELLPPOSE v4+
+        masks, _, _ = model.eval(gray, diameter=diameter, channels=[0, 0], batch_size=1)
+
         overlay_img = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
         height, width = masks.shape
         areas = []
@@ -116,3 +122,4 @@ if uploaded_files:
             file_name="master_results.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
+
