@@ -12,7 +12,7 @@ PIXEL_TO_MICROMETER_20X = 0.330
 MAX_SIZE = 1024
 
 # Load model once
-model = models.Cellpose(gpu=True, model_type='cyto')
+model = models.CellposeModel(gpu=True, model_type='cyto')
 
 st.title("Cell Segmentation and Area Analysis")
 
